@@ -28,9 +28,15 @@ class ircClient extends socketClient {
 	public  $channel;
 	public  $names = array();
 	public  $server;
+	public  $password;
 	public  $client_address;
 	public  $http_client;
 	public  $output = '';
+
+	public function __construct($bind_address, $password, $bind_port) {
+		parent::__construct($bind_address, $bind_port);
+		$this->password = $password;
+	}
 
 	/*** handle user commands ***/
 
@@ -903,6 +909,7 @@ class ircClient extends socketClient {
 	public function on_connect()
 	{
 		$this->send_script("chat.onConnecting();");
+		$this->write("PASS {$this->password}\r\n");
 		$this->write("USER {$this->nick} 0 chabotc.nl :IP {$this->client_address}\r\n");
 		$this->write("NICK {$this->nick}\r\n");
 	}

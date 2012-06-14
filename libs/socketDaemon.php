@@ -13,9 +13,9 @@ class socketDaemon {
 		return $server;
 	}
 
-	public function create_client($client_class, $remote_address, $remote_port, $bind_address = 0, $bind_port = 0)
+	public function create_client($client_class, $remote_address, $password, $remote_port, $bind_address = 0, $bind_port = 0)
 	{
-		$client = new $client_class($bind_address, $bind_port);
+		$client = new $client_class($bind_address, $password, $bind_port);
 		if (!is_subclass_of($client, 'socketClient')) {
 			throw new socketException("Invalid client class specified! Has to be a subclass of socketClient");
 		}

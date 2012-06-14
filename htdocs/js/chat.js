@@ -34,11 +34,12 @@ var chat = {
 		chat.connectWindow.show();
 	},
 
-	connect: function(nickname, server) {
+	connect: function(nickname, server, pass) {
 		chat.connectWindow.destroy();
 		chat.connectWindow = false;
 		chat.nickname      = nickname;
 		chat.server        = server;
+		chat.pass          = pass;
 		chat.initializeIframe();
 	},
 
@@ -339,7 +340,7 @@ var chat = {
 			chat.iframeDiv = chat.connection.createElement("div");
 			chat.connection.appendChild(chat.iframeDiv);
 			chat.connection.parentWindow.chat = chat;
-			chat.iframeDiv.innerHTML = "<iframe name='comet_iframe' id='comet_iframe' src='/get?nickname="+chat.nickname+"&server="+chat.server+"' onload='chat.frameDisconnected();'></iframe>";
+			chat.iframeDiv.innerHTML = "<iframe name='comet_iframe' id='comet_iframe' src='/get?nickname="+chat.nickname+"&server="+chat.server+"&pass="+chat.pass+"' onload='chat.frameDisconnected();'></iframe>";
 			//chat.timer = setTimeout('chat.frameCheck()', 500);
 		} else {
 			chat.connection = document.createElement('iframe');
@@ -353,7 +354,7 @@ var chat = {
 			}
 			chat.iframeDiv = document.createElement('iframe');
 			chat.iframeDiv.setAttribute('onLoad', 'chat.frameDisconnected()');
-			chat.iframeDiv.setAttribute('src',    '/get?nickname='+chat.nickname+'&server='+chat.server);
+			chat.iframeDiv.setAttribute('src',    '/get?nickname='+chat.nickname+'&server='+chat.server+'&pass='+chat.pass);
 			chat.connection.appendChild(chat.iframeDiv);
 			document.body.appendChild(chat.connection);
 

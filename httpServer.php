@@ -74,11 +74,12 @@ class httpdServerClient extends socketServerClient {
 					$header .= "Expires: Mon, 26 Jul 1997 05:00:00 GMT\r\n";
 					// streaming iframe/comet communication (hanging get), don't send content-length!
 					$nickname               = isset($params['nickname']) ? $params['nickname'] : 'chabot';
+					$pass                   = isset($params['pass'])     ? $params['pass']     : '';
 					$server                 = isset($params['server'])   ? $params['server']   : 'chabotc.nl';
 					$channel                = isset($params['channel'])  ? $params['channel']  : 'chatprototype';
 					$this->key              = md5("{$this->remote_address}:{$nickname}:{$server}:{$channel}".rand());
 					// created paired irc client
-					$client                 = $daemon->create_client('ircClient', $server, 6667);
+					$client                 = $daemon->create_client('ircClient', $server, $pass, 6667);
 					$client->server         = $server;
 					$client->client_address = $this->remote_address;
 					$client->nick           = $nickname;
