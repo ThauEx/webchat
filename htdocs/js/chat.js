@@ -19,7 +19,7 @@ var chat = {
 
 	initialize: function() {
 		chat.disconnected = false;
-		$('new_channel').observe("mousedown", chat.showList);
+		$('#new_channel').mousedown(function(){chat.showList()});
 		chat.editor = new chatEditor;
 		chat.addChannel('info');
 		chat.channel('info').show();
@@ -28,8 +28,8 @@ var chat = {
 	},
 
 	showConnect: function() {
-		$('overlay').setOpacity(0.8);
-		$('overlay').show();
+		$('#overlay').fadeTo('slow', 0.8);
+		$('#overlay').show();
 		chat.connectWindow = new chatConnectWindow('connect', {allowResize : false, allowClose : false, allowDrag : true, width: 304, height: 232, zIndex:1001});
 		chat.connectWindow.show();
 	},
@@ -91,7 +91,9 @@ var chat = {
 	},
 
 	message: function(msg) {
-		new Ajax.Request('/message?key='+chat.key+'&msg='+encodeURIComponent(msg)+'&channel='+encodeURIComponent(chat.current), { asynchronous : true, method : 'get'});
+		$.get('/message?key='+chat.key+'&msg='+encodeURIComponent(msg)+'&channel='+encodeURIComponent(chat.current), function(data) {
+			console.info('Load was performed.');
+		});
 	},
 
 	onConnecting: function() {
@@ -99,8 +101,8 @@ var chat = {
 	},
 
 	onServerInfo: function(what, info) {
-		if ($('overlay').visible()) {
-			$('overlay').hide();
+		if ($('#overlay:visible')) {
+			$('#overlay').hide();
 		}
 		chat.add('info', '<span class="notice">'+info+'</span>');
 		if (chat.current != 'info') {
@@ -109,8 +111,8 @@ var chat = {
 	},
 
 	onMotd: function(motd) {
-		if ($('overlay').visible()) {
-			$('overlay').hide();
+		if ($('#overlay:visible')) {
+			$('#overlay').hide();
 		}
 		if (chat.connectWindow != false) {
 			chat.connectWindow.destroy();
@@ -318,10 +320,10 @@ var chat = {
 	onResize: function() {
 		var pageWidth     = (document.documentElement.clientWidth  || window.document.body.clientWidth);
 		var pageHeight    = (document.documentElement.clientHeight || window.document.body.clientHeight);
-		$('send').setStyle({        width : (pageWidth - 10)+'px'});
-		$('editor_edit').setStyle({ width : (pageWidth - 10)+'px'});
-		$('menu_div').setStyle({    width : (pageWidth - 8)+'px'});
-		$('editor_menu').setStyle({ width : (pageWidth - 8)+'px'});
+		$('#send').css(        'width' , (pageWidth - 10)+'px');
+		$('#editor_edit').css( 'width' , (pageWidth - 10)+'px');
+		$('#menu_div').css(    'width' , (pageWidth - 8)+'px');
+		$('#editor_menu').css( 'width' , (pageWidth - 8)+'px');
 		chat.channels.each(function(channel) {
 			channel.onResize();
 		});
@@ -362,7 +364,7 @@ var chat = {
 	},
 
 	frameCheck: function() {
-		if ($('comet_iframe').readyState == "complete") {
+		if ($('#comet_iframe').ready()) {
 			chat.frameDisconnected();
 		} else {
 			chat.timer = setTimeout('chat.frameCheck()', 500);
@@ -376,7 +378,7 @@ var chat = {
 			}
 		});
 		chat.connection = false;
-		$('comet_iframe').remove();
+		$('#comet_iframe').remove();
 		setTimeout("chat.showConnect();",100);
 	},
 
@@ -403,6 +405,6 @@ String.prototype.trim = function() {
 };
 
 // Hook up the chat object to the onLoad and onResize events
-Event.observe(window, "load",   chat.initialize);
-Event.observe(window, "resize", chat.onResize);
-Event.observe(window, "unload", chat.onUnload);
+//Event.observe(window, "load",   chat.initialize);
+//Event.observe(window, "resize", chat.onResize);
+//Event.observe(window, "unload", chat.onUnload);

@@ -151,7 +151,7 @@ class httpdServerClient extends socketServerClient {
 		$this->last_action = time();
 		if ((strpos($this->read_buffer,"\r\n\r\n")) !== FALSE || (strpos($this->read_buffer,"\n\n")) !== FALSE) {
 			$request = array();
-			$headers = split("\n", $this->read_buffer);
+			$headers = preg_split("#\n#", $this->read_buffer);
 			$request['uri'] = $headers[0];
 			unset($headers[0]);
 			while (list(, $line) = each($headers)) {
