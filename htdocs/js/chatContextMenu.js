@@ -3,7 +3,7 @@
 
 /************************** chatChannel class implimentation ***********************************/
 /* Based on "ContextMenu" by 2005 Nicolas Schmitt (MIT-style license).                         */
-var chatContextMenu = Class.create();
+var chatContextMenu = $.klass();
 chatContextMenu.prototype = {
     _currentMenu : null,
 

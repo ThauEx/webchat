@@ -2,17 +2,17 @@
 // Licenced under the GPLv2. For more info see http://www.chabotc.com
 
 /****************************** chatEditor WYSIWYG input editor class  ***********************************/
-var chatEditorResizer = Class.create();
+var chatEditorResizer = $.klass();
 chatEditorResizer.prototype = {
 	initialize: function() {
-		this.divSend        = $('send');
-		this.divEditor      = $('editor_div');
-		this.divEdit        = $('editor_edit');
-		this.divSizer       = $('editor_resizer');
-		this.eventMouseDown = this.initDrag.bindAsEventListener(this);
-		this.eventMouseMove = this.updateDrag.bindAsEventListener(this);
-		this.eventMouseUp   = this.endDrag.bindAsEventListener(this);
-		this.divSizer.observe("mousedown", this.eventMouseDown);
+		this.divSend        = $('#send');
+		this.divEditor      = $('#editor_div');
+		this.divEdit        = $('#editor_edit');
+		this.divSizer       = $('#editor_resizer');
+		//this.eventMouseDown = this.initDrag.bindAsEventListener(this);
+		//this.eventMouseMove = this.updateDrag.bindAsEventListener(this);
+		//this.eventMouseUp   = this.endDrag.bindAsEventListener(this);
+		//this.divSizer.observe("mousedown", this.eventMouseDown);
 	},
 
 	initDrag: function(event) {
@@ -48,7 +48,7 @@ chatEditorResizer.prototype = {
 	}
 }
 
-var chatEditor = Class.create();
+var chatEditor = $.klass();
 chatEditor.prototype = {
 	initialize: function() {
 		// define mIRC layout codes
@@ -59,11 +59,11 @@ chatEditor.prototype = {
 		this.ITALIC    = String.fromCharCode(4);
 		this.UNDERLINE = String.fromCharCode(31);
 		// and create html editor..
-		this.doc = $('editor_edit').contentWindow.document;
+		this.doc = $('#editor_edit').contents();
 		this.doc.designMode = 'on';
 		this.createMenu();
 		// listen for Return key, which triggers the 'send' event
-		Event.observe(this.doc, 'keydown', function(event) {
+		$(this.doc).keydown(function(event){
 			if (event.keyCode == Event.KEY_RETURN && !event.shiftKey) {
 				this.send();
 				return false;
@@ -71,6 +71,7 @@ chatEditor.prototype = {
 				this.sizer.resize(80);
 			}
 		}.bind(this));
+
 		this.focus();
 	},
 
@@ -90,8 +91,8 @@ chatEditor.prototype = {
 	},
 
 	focus: function() {
-		$('editor_edit').scrollTop = 0;
-		$('editor_edit').contentWindow.focus();
+		$('#editor_edit').scrollTop = 0;
+		//$('#editor_edit').contentWindow.focus();
 	},
 
 	clear: function() {
@@ -107,11 +108,11 @@ chatEditor.prototype = {
 
 	createMenu: function() {
 		var cmds = ['bold', 'italic', 'underline', 'forecolor', 'smile'];
-		cmds.each(function(cmd) {
+		$.each(cmds, function(cmd) {
 			var menu = document.createElement('LI');
 			menu.className = 'editor_'+cmd;
 			menu.setAttribute('id', 'editor_button_'+cmd);
-			$('editor_menu').appendChild(menu);
+			$('#editor_menu').append(menu);
 			if (cmd == 'smile') {
 				this.menus.push(new chatSmiliePopup('editor_button_'+cmd, cmd));
 				return;
@@ -200,23 +201,23 @@ chatEditor.prototype = {
 }
 
 
-var chatEditorButton = Class.create();
+var chatEditorButton = $.klass();
 chatEditorButton.prototype = {
 	initialize: function(element, command) {
 		this.initEvents(element, command);
-		this.clickEvent = this.onClick.bindAsEventListener(this);
-		Event.observe(this.element, "mousedown", this.clickEvent);
+		//this.clickEvent = this.onClick.bindAsEventListener(this);
+		//Event.observe(this.element, "mousedown", this.clickEvent);
 	},
 
 	initEvents: function(element, command) {
 		this.element    = $(element);
 		this.command    = command;
-		this.mouseUp    = this.onMouseUp.bindAsEventListener(this);
-		this.mouseOver  = this.onMouseOver.bindAsEventListener(this);
-		this.mouseOut   = this.onMouseOut.bindAsEventListener(this);
-		Event.observe(this.element, "mouseup",   this.mouseUp);
-		Event.observe(this.element, "mouseover", this.mouseOver);
-		Event.observe(this.element, "mouseout",  this.mouseOut);
+		//this.mouseUp    = this.onMouseUp.bindAsEventListener(this);
+		//this.mouseOver  = this.onMouseOver.bindAsEventListener(this);
+		//this.mouseOut   = this.onMouseOut.bindAsEventListener(this);
+		//Event.observe(this.element, "mouseup",   this.mouseUp);
+		//Event.observe(this.element, "mouseover", this.mouseOver);
+		//Event.observe(this.element, "mouseout",  this.mouseOut);
 	},
 
 	onMouseUp: function() {
@@ -240,8 +241,8 @@ chatEditorButton.prototype = {
 }
 
 
-chatEditorPopup = Class.create();
-Object.extend(Object.extend(chatEditorPopup.prototype, chatEditorButton.prototype), {
+chatEditorPopup = $.klass();
+$.extend($.extend(chatEditorPopup.prototype, chatEditorButton.prototype), {
 	initialize: function(element, command) {
 		this.initEvents(element, command);
 		this.divContent = 'editor_popup_'+element;
@@ -303,8 +304,8 @@ Object.extend(Object.extend(chatEditorPopup.prototype, chatEditorButton.prototyp
 });
 
 
-chatColorPopup = Class.create();
-Object.extend(Object.extend(chatColorPopup.prototype, chatEditorPopup.prototype), {
+chatColorPopup = $.klass();
+$.extend($.extend(chatColorPopup.prototype, chatEditorPopup.prototype), {
 	populate: function() {
 		var colors = [
 		'white',
@@ -336,8 +337,8 @@ Object.extend(Object.extend(chatColorPopup.prototype, chatEditorPopup.prototype)
 });
 
 
-chatSmiliePopup = Class.create();
-Object.extend(Object.extend(chatSmiliePopup.prototype, chatEditorPopup.prototype), {
+chatSmiliePopup = $.klass();
+$.extend($.extend(chatSmiliePopup.prototype, chatEditorPopup.prototype), {
 	populate: function() {
 		var smilies = [
 		'biggrin.gif',

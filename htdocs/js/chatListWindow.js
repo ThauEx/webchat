@@ -1,8 +1,8 @@
 // WebChat2.0 Copyright (C) 2006-2007, Chris Chabot <chabotc@xs4all.nl>
 // Licenced under the GPLv2. For more info see http://www.chabotc.com
 
-chatListWindow = Class.create();
-Object.extend(Object.extend(chatListWindow.prototype, chatWindow.prototype), {
+chatListWindow = $.klass();
+$.extend($.extend(chatListWindow.prototype, chatWindow.prototype), {
 	initialize: function(id) {
 		this.windowInitialize(id, arguments[1] || {});
 		this.divList  = this.id+'_channel_list';

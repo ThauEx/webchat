@@ -2,7 +2,7 @@
 // Licenced under the GPLv2. For more info see http://www.chabotc.com
 
 /************************** chatButton class implimentation ***********************************/
-var chatButton = Class.create();
+var chatButton = $.klass();
 chatButton.prototype = {
 	initialize: function(id) {
 		this.hasEffectLib = String.prototype.parseColor != null;

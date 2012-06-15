@@ -2,14 +2,14 @@
 // Licenced under the GPLv2. For more info see http://www.chabotc.com
 
 /************************** chatWindow class implimentation ***********************************/
-var chatWindow = Class.create();
+var chatWindow = $.klass();
 chatWindow.prototype = {
 	initialize: function(id) {
 		this.windowInitialize(id, arguments[1] || {});
 	},
 
 	windowInitialize: function(id) {
-		this.options = Object.extend({
+		this.options = $.extend({
 			allowResize	: true,
 			allowClose  : true,
 			allowDrag   : true,
@@ -30,31 +30,32 @@ chatWindow.prototype = {
 		this.divContent = this.id+'_content';
 		this.createLayout();
 		this.element    = $(this.id);
-		$(this.id).setStyle({ width  : this.options.width+'px',
-		                      height : this.options.height+'px',
-		                      top    : this.options.top+'px',
-		                      left   : this.options.left+'px',
-		                      zIndex : this.options.zIndex});
+		console.log(this.options.width);
+		$("#" + this.id).css({ 'width'  : this.options.width+'px',
+		                 'height' : this.options.height+'px',
+		                 'top'    : this.options.top+'px',
+		                 'left'   : this.options.left+'px',
+		                 'zIndex' : this.options.zIndex});
 		if (this.options.allowResize) {
 			this.eventMouseDown = this.initDrag.bindAsEventListener(this);
 			this.eventMouseMove = this.updateDrag.bindAsEventListener(this);
 			this.eventMouseUp   = this.endDrag.bindAsEventListener(this);
-			$(this.divSizer).observe('mousedown', this.eventMouseDown);
+			$("#" + this.divSizer).observe('mousedown', this.eventMouseDown);
 		}
 		if (this.options.allowClose) {
 			this.eventClose     = this.hide.bindAsEventListener(this);
-			$(this.divClose).observe('mousedown', this.eventClose);
+			$("#" + this.divClose).observe('mousedown', this.eventClose);
 		}
 		if (this.options.allowDrag) {
-			this.draggable      = new Draggable(this.id, { handle : this.divHandle});
-			$(this.divHandle).setStyle({ cursor : 'move' });
+			//this.draggable      = new Draggable(this.id, { handle : this.divHandle});
+			$("#" + this.divHandle).css({ 'cursor' : 'move' });
 		}
 		this.resizeContent();
-		$(this.id).hide();
+		$("#" + this.id).hide();
 	},
 
 	setTitle: function(title) {
-		$(this.divTitle).update(title);
+		$("#" + this.divTitle).html(title);
 	},
 
 	createLayout: function() {
@@ -94,21 +95,21 @@ chatWindow.prototype = {
 			div4.className = 'window_sizer';
 			div1.appendChild(div4);
 		}
-		$('main').appendChild(div1);
+		$('#main').append(div1);
 	},
 
 	destroy: function(event) {
 		if (this.options.allowResize) {
-			$(this.divSizer).stopObserving('mousedown', this.eventMouseDown);
+			$("#" + this.divSizer).stopObserving('mousedown', this.eventMouseDown);
 		}
 		if (this.options.allowClose) {
-			$(this.divClose).stopObserving("mousedown", this.eventClose);
+			$("#" + this.divClose).stopObserving("mousedown", this.eventClose);
 		}
 		if (this.options.allowDrag) {
 			this.draggable.destroy();
 		}
 		this.hide();
-		$('main').removeChild(this.element);
+		$('#main').removeChild(this.element);
 	},
 
 	shake: function() {
@@ -138,13 +139,13 @@ chatWindow.prototype = {
 	center: function() {
 		var pageWidth     = (document.documentElement.clientWidth  || window.document.body.clientWidth);
 		var pageHeight    = (document.documentElement.clientHeight || window.document.body.clientHeight);
-		var dimensions    = $(this.id).getDimensions();
-		this.options.top  = (pageHeight - dimensions.height) / 2;
-		this.options.left = (pageWidth  - dimensions.width)  / 2;
+		var dimensions    = $("#" + this.id);
+		this.options.top  = (pageHeight - dimensions.height()) / 2;
+		this.options.left = (pageWidth  - dimensions.width())  / 2;
 		if (this.options.top  < 0) this.options.top  = 0;
 		if (this.options.left < 0) this.options.left = 0;
-		$(this.id).setStyle({ top    : this.options.top+'px',
-		                      left   : this.options.left+'px' });
+		$("#" + this.id).css({ 'top'    : this.options.top+'px',
+		                       'left'   : this.options.left+'px' });
 
 	},
 
@@ -161,10 +162,10 @@ chatWindow.prototype = {
 		var dx       = pointer[0] - this.pointer[0];
 		var dy       = pointer[1] - this.pointer[1];
 		this.pointer = pointer;
-		dx = parseFloat($(this.id).getStyle('width'))  + dx > parseFloat(this.options.minWidth)  ? dx : 0;
-		dy = parseFloat($(this.id).getStyle('height')) + dy > parseFloat(this.options.minHeight) ? dy : 0;
-		$(this.id).setStyle({ width  : parseFloat($(this.id).getStyle('width'))  + dx + 'px',
-		                      height : parseFloat($(this.id).getStyle('height')) + dy + 'px'});
+		dx = parseFloat($("#" + this.id).css('width'))  + dx > parseFloat(this.options.minWidth)  ? dx : 0;
+		dy = parseFloat($("#" + this.id).css('height')) + dy > parseFloat(this.options.minHeight) ? dy : 0;
+		$("#" + this.id).css({ 'width'  : parseFloat($("#" + this.id).getStyle('width'))  + dx + 'px',
+		                       'height' : parseFloat($("#" + this.id).getStyle('height')) + dy + 'px'});
 		this.resizeContent();
 	},
 
@@ -176,7 +177,12 @@ chatWindow.prototype = {
 	},
 
 	resizeContent: function() {
-		$(this.divContent).setStyle({ width  : parseFloat($(this.id).getStyle('width')) - 2 + 'px',
-		                              height : (parseFloat($(this.id).getStyle('height')) - 28) + 'px' });
+		console.info("resizeContent start");
+		console.log(this.divContent);
+		console.log(this.id);
+		console.log($("#" + this.id).css('width'));
+		$("#" + this.divContent).css({ 'width'  : parseFloat($("#" + this.id).css('width')) - 2 + 'px',
+		                               'height' : (parseFloat($("#" + this.id).css('height')) - 28) + 'px' });
+		console.info("resizeContent end");
 	}
 }

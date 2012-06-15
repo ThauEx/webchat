@@ -3,7 +3,7 @@
 
 /************************** chatchatTooltip class implimentation ***********************************/
 /* Based on "chatTooltip-0.1" by Jonathan Weiss <jw@innerewut.de>                                  */
-var chatTooltip = Class.create();
+var chatTooltip = $.klass();
 chatTooltip.prototype = {
   initialize: function(element, tool_tip) {
     var options = Object.extend({

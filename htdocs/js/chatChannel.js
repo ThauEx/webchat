@@ -2,7 +2,7 @@
 // Licenced under the GPLv2. For more info see http://www.chabotc.com
 
 /************************** chatChannel class implimentation ***********************************/
-var chatChannel = Class.create();
+var chatChannel = $.klass();
 chatChannel.prototype = {
 	initialize: function(channel) {
 		this.closing            = false;
@@ -27,24 +27,25 @@ chatChannel.prototype = {
 		this.divTopic           = 'messages_topic_' + this.channel;
 		this.createLayout();
 		this.members            = new chatMembers(this.channel, this.ulWhoContent, this.divWhoTitle, this);
-		$(this.divMessagesHeader).update(this.channel+'<span id="'+this.divTopic+'"></span>');
+		$("#" + this.divMessagesHeader).html(this.channel+'<span id="'+this.divTopic+'"></span>');
 		var close = this.channel != 'info' ? '<div class="tab_close" id="'+this.divHeaderClose+'"></div>' : '';
-		new Insertion.Bottom('toolbar', '<div class="channel_button" id="'+this.divButton+'"><div class="tab_left"></div><div class="tab_center">'+close+this.channel+'</div><div class="tab_right"></div></div>');
-		$(this.divWhoSizer).onclick = this.collapseWho.bindAsEventListener(this);
-		$(this.divButton).onclick   = this.show.bindAsEventListener(this);
-		this.eventMouseDown = this.initDrag.bindAsEventListener(this);
-		this.eventMouseMove = this.updateDrag.bindAsEventListener(this);
-		this.eventMouseUp   = this.endDrag.bindAsEventListener(this);
-		$(this.divSizer).observe("mousedown", this.eventMouseDown);
+		$("#toolbar").append('<div class="channel_button" id="'+this.divButton+'"><div class="tab_left"></div><div class="tab_center">'+close+this.channel+'</div><div class="tab_right"></div></div>');
+		//$(this.divWhoSizer).onclick = this.collapseWho.bindAsEventListener(this);
+		//$(this.divButton).onclick   = this.show.bindAsEventListener(this);
+		//this.eventMouseDown = this.initDrag.bindAsEventListener(this);
+		//this.eventMouseMove = this.updateDrag.bindAsEventListener(this);
+		//this.eventMouseUp   = this.endDrag.bindAsEventListener(this);
+		$('#' + this.divSizer).mousedown(function(){this.eventMouseDown()});
+
 		this.hide();
 		if (this.channel != 'info') {
 			$(this.divButton).hide();
 			new Effect.Appear($(this.divButton), { duration : 0.4 });
 			$(this.divHeaderClose).onclick = this.close.bindAsEventListener(this);
 		} else {
-			$(this.divNames).setStyle({width : '0px'});
-			$(this.divSizer).hide();
-			$(this.divNames).hide();
+			$("#" + this.divNames).css('width', '0px');
+			$("#" + this.divSizer).hide();
+			$("#" + this.divNames).hide();
 		}
 		setTimeout('chat.createSortable();', 10);
 	},
@@ -118,25 +119,25 @@ chatChannel.prototype = {
 		div7.setAttribute('id', this.divMessagesContent);
 		div7.className     = 'messages_content';
 		div5.appendChild(div7);
-		$('main').appendChild(div1);
+		$('#main').append(div1);
 	},
 
 	onResize: function() {
 		var pageWidth  = (document.documentElement.clientWidth  || window.document.body.clientWidth);
 		var pageHeight = (document.documentElement.clientHeight || window.document.body.clientHeight);
-		var namesWidth = $(this.divNames).getDimensions().width;
-		var sendHeight = $('send').getDimensions().height;
+		var namesWidth = $("#" + this.divNames).width();
+		var sendHeight = $('#send').height();
 		if (this.channel == 'info') {
 			namesWidth = -4;
 		}
 
-		$(this.divMessages).setStyle({ height : (pageHeight - 63 - sendHeight)+'px', width : (pageWidth - namesWidth - 14)+'px' });
-		$(this.divMessagesContent).setStyle({ height : (pageHeight - 86 - sendHeight)+'px', width : (pageWidth - namesWidth - 14)+'px' });
-		$(this.divSizer).setStyle({ height : (pageHeight - 63 - sendHeight)+'px'});
-		$(this.divNames).setStyle({ height : (pageHeight - 63 - sendHeight)+'px' });
-		$(this.divWhoContent).setStyle({ height : (pageHeight - 86 - sendHeight)+'px' });
-		if ($(this.divMessagesContent).lastChild != undefined) {
-			$(this.divMessagesContent).scrollTop = $(this.divMessagesContent).lastChild.offsetTop;
+		$("#" + this.divMessages).css({ 'height' : (pageHeight - 63 - sendHeight)+'px', 'width' : (pageWidth - namesWidth - 14)+'px' });
+		$("#" + this.divMessagesContent).css({ 'height' : (pageHeight - 86 - sendHeight)+'px', 'width' : (pageWidth - namesWidth - 14)+'px' });
+		$("#" + this.divSizer).css({ 'height' : (pageHeight - 63 - sendHeight)+'px'});
+		$("#" + this.divNames).css({ 'height' : (pageHeight - 63 - sendHeight)+'px' });
+		$("#" + this.divWhoContent).css({ 'height' : (pageHeight - 86 - sendHeight)+'px' });
+		if ($("#" + this.divMessagesContent).lastChild != undefined) {
+			$("#" + this.divMessagesContent).scrollTop = $(this.divMessagesContent).lastChild.offsetTop;
 		}
 	},
 
@@ -152,7 +153,7 @@ chatChannel.prototype = {
 		this.pointer = pointer;
 		var newWidth = parseFloat($(this.divNames).getStyle('width')) - dx;
 		if (newWidth > 50 && newWidth < 400) {
-			$(this.divNames).setStyle({ width : newWidth + 'px'});
+			$(this.divNames).css({ 'width' : newWidth + 'px'});
 		}
 		this.onResize();
 	},
@@ -190,23 +191,24 @@ chatChannel.prototype = {
 
 	show: function() {
 		if (!this.closing) {
-			chat.channels.each(function(channel) {
+			$.each(chat.channels, function(channel) {
 				if (channel.channel != this.channel) {
-					channel.hide();
+					$(channel).hide();
 				}
 			});
-			$(this.divMain).show();
-			$(this.divButton).setStyle({fontWeight : 'normal', color: '#ffffff'});
-			$(this.divButton).addClassName('on');
+			$("#" + this.divMain).show();
+			$("#" + this.divButton).css('fontWeight', 'normal');
+			$("#" + this.divButton).css('color', '#ffffff');
+			$("#" + this.divButton).addClass('on');
 			this.onResize();
 			chat.current = this.channel;
 		}
 	},
 
 	hide: function() {
-		$(this.divButton).removeClassName('on');
-		$(this.divButton).setStyle({color: '#15428B'});
-		$(this.divMain).hide();
+		$("#" + this.divButton).removeClass('on');
+		$("#" + this.divButton).css('color', '#15428B');
+		$("#" + this.divMain).hide();
 	},
 
 	visible: function() {

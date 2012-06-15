@@ -2,7 +2,7 @@
 // Licenced under the GPLv2. For more info see http://www.chabotc.com
 
 /************************** chatMembers class implimentation ***********************************/
-var chatMembers = Class.create();
+var chatMembers = $.klass();
 chatMembers.prototype = {
 	initialize: function(channel, content, header, parent) {
 		this.channel  = channel;

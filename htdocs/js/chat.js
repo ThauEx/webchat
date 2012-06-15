@@ -75,7 +75,7 @@ var chat = {
 	},
 
 	createSortable: function() {
-		Sortable.create('toolbar', {tag: 'div', only : 'channel_button', ghosting : false, constraint : 'horizontal', overlap : 'horizontal', scroll : window });
+		//Sortable.create('toolbar', {tag: 'div', only : 'channel_button', ghosting : false, constraint : 'horizontal', overlap : 'horizontal', scroll : window });
 	},
 
 	add: function(channel, message) {
@@ -324,9 +324,9 @@ var chat = {
 		$('#editor_edit').css( 'width' , (pageWidth - 10)+'px');
 		$('#menu_div').css(    'width' , (pageWidth - 8)+'px');
 		$('#editor_menu').css( 'width' , (pageWidth - 8)+'px');
-		chat.channels.each(function(channel) {
-			channel.onResize();
-		});
+		$.each(chat.channels, function(channel) {
+			//channel.onResize();
+		})
 		window.scrollTo(0, 0);
 	},
 
@@ -405,6 +405,6 @@ String.prototype.trim = function() {
 };
 
 // Hook up the chat object to the onLoad and onResize events
-//Event.observe(window, "load",   chat.initialize);
-//Event.observe(window, "resize", chat.onResize);
-//Event.observe(window, "unload", chat.onUnload);
+$(document).ready(function() {chat.initialize()});
+$(window).resize(function() {chat.onResize()});
+$(window).unload(function() {chat.onUnload()});
