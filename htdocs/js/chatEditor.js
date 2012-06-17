@@ -108,7 +108,7 @@ chatEditor.prototype = {
 
 	createMenu: function() {
 		var cmds = ['bold', 'italic', 'underline', 'forecolor', 'smile'];
-		$.each(cmds, function(cmd) {
+		$.each(cmds, function(index, cmd) {
 			var menu = document.createElement('LI');
 			menu.className = 'editor_'+cmd;
 			menu.setAttribute('id', 'editor_button_'+cmd);
@@ -205,35 +205,35 @@ var chatEditorButton = $.klass();
 chatEditorButton.prototype = {
 	initialize: function(element, command) {
 		this.initEvents(element, command);
-		//this.clickEvent = this.onClick.bindAsEventListener(this);
-		//Event.observe(this.element, "mousedown", this.clickEvent);
+		var that        = this;
+		$(this.element).on('onClick', function(event){that.onClick()});
+		$(this.element).on('mousedown', function(event){that.onClick()});
+
 	},
 
 	initEvents: function(element, command) {
-		this.element    = $(element);
+		this.element    = $("#" + element);
 		this.command    = command;
-		//this.mouseUp    = this.onMouseUp.bindAsEventListener(this);
-		//this.mouseOver  = this.onMouseOver.bindAsEventListener(this);
-		//this.mouseOut   = this.onMouseOut.bindAsEventListener(this);
-		//Event.observe(this.element, "mouseup",   this.mouseUp);
-		//Event.observe(this.element, "mouseover", this.mouseOver);
-		//Event.observe(this.element, "mouseout",  this.mouseOut);
+		var that        = this;
+		$(this.element).on('mouseup', function(event){that.onMouseUp()});
+		$(this.element).on('mouseover', function(event){that.onMouseOver()});
+		$(this.element).on('mouseout', function(event){that.onMouseOut()});
 	},
 
 	onMouseUp: function() {
-		this.element.removeClassName('down');
+		this.element.removeClass('down');
 	},
 
 	onMouseOver: function() {
-		this.element.addClassName('over');
+		this.element.addClass('over');
 	},
 
 	onMouseOut: function() {
-		this.element.removeClassName('over');
+		this.element.removeClass('over');
 	},
 
 	onClick: function(event) {
-		this.element.addClassName('down');
+		this.element.addClass('down');
 		chat.editor.focus();
 		chat.editor.execCommand(this.command);
 
@@ -247,19 +247,21 @@ $.extend($.extend(chatEditorPopup.prototype, chatEditorButton.prototype), {
 		this.initEvents(element, command);
 		this.divContent = 'editor_popup_'+element;
 		this.createLayout();
-		$(this.divContent).setStyle({opacity : 0.85});
-		$(this.divContent).hide();
-		this.clickEvent  = this.onClick.bindAsEventListener(this);
-		this.selectEvent = this.onSelect.bindAsEventListener(this);
+		var that        = this;
+		$("#" + this.divContent).css({'opacity' : 0.85});
+		$("#" + this.divContent).hide();
+		$(this.element).on('onClick', function(event){that.clickEvent()});
+		$(this.element).on('onSelect', function(event){that.selectEvent()});
+
 		var sel = this.selectEvent;
-		Event.observe(this.element,  "click", this.clickEvent);
+		$("#" + this.element.id).click(function(){this.clickEvent()});
 		if (this.populate != undefined) {
 			this.populate();
-			$$('#'+this.divContent+' div').each(function(element) {
-				Event.observe(element.id, "click", sel);
+			$('#'+this.divContent+' div').each(function(index, element) {
+				$("#" + element.id).click(function(){sel()});
 			});
-			$$('#'+this.divContent+' img').each(function(element) {
-				Event.observe(element.id, "click", sel);
+			$('#'+this.divContent+' img').each(function(index, element) {
+				$("#" + element.id).click(function(){sel()});
 			});
 		}
 	},
@@ -282,15 +284,15 @@ $.extend($.extend(chatEditorPopup.prototype, chatEditorButton.prototype), {
 	},
 
 	show: function() {
-		var dimensions = $(this.divContent).getDimensions();
-		$(this.divContent).setStyle({top : (this.element.offsetTop - dimensions.height) - 2 + 'px', left : (this.element.offsetLeft + 1) + 'px'});
-		this.element.removeClassName('over');
-		this.element.addClassName('down');
+		var dimensions = $("#" + this.divContent);
+		$("#" + this.divContent).setStyle({top : (this.element.offsetTop - dimensions.height()) - 2 + 'px', left : (this.element.offsetLeft + 1) + 'px'});
+		this.element.removeClass('over');
+		this.element.addClass('down');
 		Effect.Appear(this.divContent, {duration:0.2, to : 0.85});
 	},
 
 	hide: function() {
-		this.element.removeClassName('down');
+		this.element.removeClass('down');
 		Effect.Fade(this.divContent, {duration:0.2});
 	},
 
@@ -324,14 +326,14 @@ $.extend($.extend(chatColorPopup.prototype, chatEditorPopup.prototype), {
 		'fuchsia',
 		'gray'
 		];
-		var menuDiv = $(this.divContent);
+		var menuDiv = $("#" + this.divContent);
 		var cmd     = this.command;
-		colors.each(function(color) {
+		$.each(colors, function(index, color) {
 			var div1 = document.createElement('DIV');
 			div1.className = 'editor_color';
 			div1.setAttribute('id', 'editor_'+cmd+'_'+color);
-			menuDiv.appendChild(div1);
-			$('editor_'+cmd+'_'+color).setStyle({backgroundColor: color});
+			menuDiv.append(div1);
+			$('#editor_'+cmd+'_'+color).css({'backgroundColor': color});
 		});
 	}
 });
@@ -365,12 +367,12 @@ $.extend($.extend(chatSmiliePopup.prototype, chatEditorPopup.prototype), {
 		'doubt.gif'
 		];
 		menuDiv = $(this.divContent);
-		smilies.each(function(smile) {
+		$.each(smilies, function(index, smile) {
 			var img1 = document.createElement('IMG');
 			img1.className = 'editor_smilie';
 			img1.setAttribute('src', '/images/smilies/'+smile);
 			img1.setAttribute('id','editor_smile_'+smile);
-			menuDiv.appendChild(img1);
+			menuDiv.append(img1);
 		});
 	}
 });

@@ -30,21 +30,20 @@ chatWindow.prototype = {
 		this.divContent = this.id+'_content';
 		this.createLayout();
 		this.element    = $(this.id);
-		console.log(this.options.width);
 		$("#" + this.id).css({ 'width'  : this.options.width+'px',
 		                 'height' : this.options.height+'px',
 		                 'top'    : this.options.top+'px',
 		                 'left'   : this.options.left+'px',
 		                 'zIndex' : this.options.zIndex});
 		if (this.options.allowResize) {
-			this.eventMouseDown = this.initDrag.bindAsEventListener(this);
-			this.eventMouseMove = this.updateDrag.bindAsEventListener(this);
-			this.eventMouseUp   = this.endDrag.bindAsEventListener(this);
-			$("#" + this.divSizer).observe('mousedown', this.eventMouseDown);
+			//this.eventMouseDown = this.initDrag.bindAsEventListener(this);
+			//this.eventMouseMove = this.updateDrag.bindAsEventListener(this);
+			//this.eventMouseUp   = this.endDrag.bindAsEventListener(this);
+			$("#" + this.divSizer).mousedown(function(){this.eventMouseDown()});
 		}
 		if (this.options.allowClose) {
-			this.eventClose     = this.hide.bindAsEventListener(this);
-			$("#" + this.divClose).observe('mousedown', this.eventClose);
+			//this.eventClose     = this.hide.bindAsEventListener(this);
+			$("#" + this.divClose).mousedown(function(){this.eventClose()});
 		}
 		if (this.options.allowDrag) {
 			//this.draggable      = new Draggable(this.id, { handle : this.divHandle});
@@ -106,10 +105,10 @@ chatWindow.prototype = {
 			$("#" + this.divClose).stopObserving("mousedown", this.eventClose);
 		}
 		if (this.options.allowDrag) {
-			this.draggable.destroy();
+			//this.draggable.destroy();
 		}
 		this.hide();
-		$('#main').removeChild(this.element);
+		$('#main').remove(this.element);
 	},
 
 	shake: function() {
@@ -117,11 +116,12 @@ chatWindow.prototype = {
 	},
 
 	hide: function(event) {
+		console.log("hide");
 		if (event != undefined && event && event.stopPropagation != undefined) {
 			event.stopPropagation();
 		}
 		//new Effect.Fade(this.element, {duration: 0.4});
-		this.element.hide();
+		$("#" + this.id).hide();
 	},
 
 	show: function(event) {
@@ -129,7 +129,7 @@ chatWindow.prototype = {
 			this.center();
 		}
 		//new Effect.Appear(this.element, {duration: 0.4});
-		this.element.show();
+		$("#" + this.id).show();
 	},
 
 	visible: function() {
@@ -177,12 +177,7 @@ chatWindow.prototype = {
 	},
 
 	resizeContent: function() {
-		console.info("resizeContent start");
-		console.log(this.divContent);
-		console.log(this.id);
-		console.log($("#" + this.id).css('width'));
 		$("#" + this.divContent).css({ 'width'  : parseFloat($("#" + this.id).css('width')) - 2 + 'px',
 		                               'height' : (parseFloat($("#" + this.id).css('height')) - 28) + 'px' });
-		console.info("resizeContent end");
 	}
 }
