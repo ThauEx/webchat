@@ -23,30 +23,26 @@ chatWindow.prototype = {
       		zIndex		: 100
     		}, arguments[1] || {});
 		this.id         = 'window_' + id;
-		this.divSizer   = this.id+'_sizer';
 		this.divHandle  = this.id+'_handle';
 		this.divClose   = this.id+'_close';
 		this.divTitle   = this.id+'_title';
 		this.divContent = this.id+'_content';
 		this.createLayout();
 		this.element    = $(this.id);
+		that		    = this;
 		$("#" + this.id).css({ 'width'  : this.options.width+'px',
 		                 'height' : this.options.height+'px',
 		                 'top'    : this.options.top+'px',
 		                 'left'   : this.options.left+'px',
 		                 'zIndex' : this.options.zIndex});
 		if (this.options.allowResize) {
-			//this.eventMouseDown = this.initDrag.bindAsEventListener(this);
-			//this.eventMouseMove = this.updateDrag.bindAsEventListener(this);
-			//this.eventMouseUp   = this.endDrag.bindAsEventListener(this);
-			$("#" + this.divSizer).mousedown(function(){this.eventMouseDown()});
+			$("#" + this.id).resizable({alsoResize: "#" + this.id + "_content", minHeight: $("#" + this.id).height(), minWidth: $("#" + this.id).width()});
 		}
 		if (this.options.allowClose) {
-			//this.eventClose     = this.hide.bindAsEventListener(this);
-			$("#" + this.divClose).mousedown(function(){this.eventClose()});
+			$("#" + this.divClose).mousedown(function(){$("#" + that.id).hide()});
 		}
 		if (this.options.allowDrag) {
-			//this.draggable      = new Draggable(this.id, { handle : this.divHandle});
+			$("#" + this.id).draggable({ handle: '.window_handle', containment: 'html'});
 			$("#" + this.divHandle).css({ 'cursor' : 'move' });
 		}
 		this.resizeContent();
@@ -89,26 +85,18 @@ chatWindow.prototype = {
 		div3.className = 'window_content';
 		div1.appendChild(div3);
 		if (this.options.allowResize) {
-			var div4       = document.createElement('DIV');
+			/*var div4       = document.createElement('DIV');
 			div4.setAttribute('id', this.divSizer);
 			div4.className = 'window_sizer';
-			div1.appendChild(div4);
+			div1.appendChild(div4);*/
 		}
 		$('#main').append(div1);
 	},
 
 	destroy: function(event) {
-		if (this.options.allowResize) {
-			$("#" + this.divSizer).stopObserving('mousedown', this.eventMouseDown);
-		}
-		if (this.options.allowClose) {
-			$("#" + this.divClose).stopObserving("mousedown", this.eventClose);
-		}
-		if (this.options.allowDrag) {
-			//this.draggable.destroy();
-		}
+		$("#" + this.id).off();
 		this.hide();
-		$('#main').remove(this.element);
+		$("#" + this.id).remove();
 	},
 
 	shake: function() {
@@ -116,7 +104,6 @@ chatWindow.prototype = {
 	},
 
 	hide: function(event) {
-		console.log("hide");
 		if (event != undefined && event && event.stopPropagation != undefined) {
 			event.stopPropagation();
 		}

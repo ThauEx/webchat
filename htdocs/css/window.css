@@ -90,7 +90,7 @@
 	border-bottom		: 1px solid #7f95b1;
 }
 
-.window_sizer {
+.ui-resizable-handle.ui-icon {
 	opacity				: .85;
 	-moz-opacity		: .85;
 	filter				: alpha(opacity=80);

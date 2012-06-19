@@ -30,12 +30,7 @@ $.extend($.extend(chatConnectWindow.prototype, chatWindow.prototype), {
 		var nickname = $('#input_nickname').val();
 		var pass = $('#input_serverPassword').val();
 
-		console.log(server);
-		console.log(nickname);
-		console.log(pass);
-
 		if (server && nickname != '' && nickname != undefined) {
-			console.info("here");
 			chat.connect(nickname, server, pass);
 		}
 	}

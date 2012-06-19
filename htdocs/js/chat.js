@@ -331,7 +331,7 @@ var chat = {
 	},
 
 	initializeIframe: function() {
-		if (navigator.appVersion.indexOf("MSIE") != -1) {
+		if ($.browser.msie) {
 			// use the "htmlfile hack" in ie to prevent the background click sounds
 			chat.connection = new ActiveXObject("htmlfile");
 			chat.connection.open();
@@ -359,7 +359,6 @@ var chat = {
 			chat.iframeDiv.setAttribute('src',    '/get?nickname='+chat.nickname+'&server='+chat.server+'&pass='+chat.pass);
 			chat.connection.appendChild(chat.iframeDiv);
 			document.body.appendChild(chat.connection);
-
 		}
 	},
 
