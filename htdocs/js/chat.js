@@ -76,6 +76,7 @@ var chat = {
 
 	createSortable: function() {
 		//Sortable.create('toolbar', {tag: 'div', only : 'channel_button', ghosting : false, constraint : 'horizontal', overlap : 'horizontal', scroll : window });
+		$("#toolbar").sortable({ items: 'div.channel_button', axis: 'x' });
 	},
 
 	add: function(channel, message) {

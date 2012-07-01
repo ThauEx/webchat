@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 WebChat2.0 Copyright (C) 2006-2007, Chris Chabot <chabotc@xs4all.nl>
 
@@ -75,8 +75,8 @@ class httpdServerClient extends socketServerClient {
 					// streaming iframe/comet communication (hanging get), don't send content-length!
 					$nickname               = isset($params['nickname']) ? $params['nickname'] : 'chabot';
 					$pass                   = isset($params['pass'])     ? $params['pass']     : '';
-					$server                 = isset($params['server'])   ? $params['server']   : 'chabotc.nl';
-					$channel                = isset($params['channel'])  ? $params['channel']  : 'chatprototype';
+					$server                 = isset($params['server'])   ? $params['server']   : 'irc.sturmrune.de';
+					$channel                = isset($params['channel'])  ? $params['channel']  : 'sr';
 					$this->key              = md5("{$this->remote_address}:{$nickname}:{$server}:{$channel}".rand());
 					// created paired irc client
 					$client                 = $daemon->create_client('ircClient', $server, $pass, 6667);

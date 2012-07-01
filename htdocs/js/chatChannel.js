@@ -35,13 +35,18 @@ chatChannel.prototype = {
 		//this.eventMouseDown = this.initDrag.bindAsEventListener(this);
 		//this.eventMouseMove = this.updateDrag.bindAsEventListener(this);
 		//this.eventMouseUp   = this.endDrag.bindAsEventListener(this);
+		$('#' + this.divSizer).click(function(){this.show()});
 		$('#' + this.divSizer).mousedown(function(){this.eventMouseDown()});
 
 		this.hide();
 		if (this.channel != 'info') {
 			$(this.divButton).hide();
-			new Effect.Appear($(this.divButton), { duration : 0.4 });
-			$(this.divHeaderClose).onclick = this.close.bindAsEventListener(this);
+			$("#" + this.divButton).show('400');
+			//new Effect.Appear($(this.divButton), { duration : 0.4 });
+			//$(this.divHeaderClose).onclick = this.close.bindAsEventListener(this);
+			$("#" + this.divHeaderClose).on('click', function(event){this.click()});
+
+
 		} else {
 			$("#" + this.divNames).css('width', '0px');
 			$("#" + this.divSizer).hide();
@@ -51,13 +56,14 @@ chatChannel.prototype = {
 	},
 
 	destroy: function() {
-		new Effect.Fade(this.divButton, {duration : 0.4, afterFinish: function(effect) { Element.remove(effect.element)} });
+		$("#" + this.divButton).hide('400').remove();
+		//new Effect.Fade(this.divButton, {duration : 0.4, afterFinish: function(effect) { Element.remove(effect.element)} });
 		this.members.destroy();
 		if (this.channel != 'info') {
 			$(this.divHeaderClose).stopObserving('click');
 		}
 		$(this.divButton).stopObserving('click');
-		$('main').removeChild($(this.divMain));
+		$('#main').removeChild($(this.divMain));
 		chat.channels.splice(chat.channels.indexOf(this), 1);
 		if (chat.current == this.channel) {
 			chat.channel('info').show();
@@ -190,7 +196,9 @@ chatChannel.prototype = {
 	},
 
 	show: function() {
+		console.log("show");
 		if (!this.closing) {
+			console.log("show each");
 			$.each(chat.channels, function(channel) {
 				if (channel.channel != this.channel) {
 					$(channel).hide();
@@ -217,9 +225,9 @@ chatChannel.prototype = {
 
 	setTopic: function(topic) {
 		if (topic == undefined) {
-			this.divTopic.update('');
+			$("#" + this.divTopic).html('');
 		} else {
-			$(this.divTopic).update(': '+topic);
+			$("#" + this.divTopic).html(': '+topic);
 		}
 	},
 
@@ -239,19 +247,19 @@ chatChannel.prototype = {
 
 	add: function(message) {
 		if (chat.current != this.channel) {
-			$(this.divButton).setStyle({fontWeight : 'bold'});
+			$("#" + this.divButton).css({'fontWeight' : 'bold'});
 		}
 		if (this.messageCounter >= 500) {
 			for (var i = 0 ; i < 10 ; i++) {
-				$(this.divMessagesContent).removeChild($(this.divMessagesContent).firstChild);
+				$("#" + this.divMessagesContent).removeChild($("#" + this.divMessagesContent + ":lastChild"));
 			}
 			this.messageCounter -= 10;
 		}
 		var div1        = document.createElement('DIV');
 		div1.className  = 'message';
 		div1.innerHTML  = this.smilify(this.colorize(this.linkify(message)));
-		$(this.divMessagesContent).appendChild(div1);
-		$(this.divMessagesContent).scrollTop = $(this.divMessagesContent).lastChild.offsetTop;
+		$("#" + this.divMessagesContent).append(div1);
+		$("#" + this.divMessagesContent).scrollTop = $("#" + this.divMessagesContent + ":last-child").offsetTop;
 		this.messageCounter++;
 	},
 
@@ -301,9 +309,9 @@ chatChannel.prototype = {
 			['neutral.gif', ':neutral:'],
 			['doubt.gif', ':doubt:']
 		];
-		smiles.each(function(e) {
+		$.each(smiles, function(e) {
 			message = message.replace(e[1], '<img src="/images/smilies/'+e[0]+'" />', 'igm');
-		});
+		})
 		return message;
 	},
 

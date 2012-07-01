@@ -8,11 +8,11 @@ $.extend($.extend(chatListWindow.prototype, chatWindow.prototype), {
 		this.divList  = this.id+'_channel_list';
 		this.divInput = this.id+'_channel_input';
 		this.channels = [];
-		$(this.divContent).update('<div class="list_content">'+
+		$("#" + this.divContent).html('<div class="list_content">'+
 		                               '<div class="list_input" id='+this.divInput+'">Enter channel name, starting with a # (and hit enter to join)<br /><input type="text" id="entered_channel" name="entered_channel" value="#" /><br />Or select a channmel from the list (click to join)</div>'+
 		                               '<div class="list_list" id="'+this.divList+'"></div>'+
 		                               '</div>');
-		$('entered_channel').observe('keypress', this.onKeyPress);
+		//$('#entered_channel').observe('keypress', this.onKeyPress);
 		this.setTitle('Select a channel');
 		chat.message('/list');
 	},
@@ -20,7 +20,7 @@ $.extend($.extend(chatListWindow.prototype, chatWindow.prototype), {
 	onKeyPress: function(e) {
 		if (e.keyCode == Event.KEY_RETURN) {
 			chat.message('/join '+$('entered_channel').getValue());
-			$('entered_channel').clear();
+			$('#entered_channel').clear();
 			chat.listWindow.hide(); // aka hide me
 			return true;
 		}
@@ -38,7 +38,7 @@ $.extend($.extend(chatListWindow.prototype, chatWindow.prototype), {
 
 	start: function() {
 		//$('entered_channel').focus();
-		$(this.divList).update('<img src="/images/loading.gif" alt="Loading.." /> Loading channel list...');
+		$("#" + this.divList).html('<img src="/images/loading.gif" alt="Loading.." /> Loading channel list...');
 		this.channels = [];
 	},
 
@@ -48,23 +48,24 @@ $.extend($.extend(chatListWindow.prototype, chatWindow.prototype), {
 	},
 
 	done: function() {
-		$(this.divList).update('');
+		$("#" + this.divList).html('');
 		var sorted = this.channels.sort();
 		var length = sorted.length;
 		var cnt    = 0;
+		var that   = this;
 		for (var i = 0 ; i < length ; i++) {
 			cnt++;
 			if (sorted[i].members > 2) {
-				new Insertion.Bottom(this.divList, '<div id="channel_list_'+sorted[i].channel+'" class="channel_list_entry">'+
+				$("#" + this.divList).append('<div id="channel_list_'+sorted[i].channel+'" class="channel_list_entry">'+
 			                                       '<div class="channel_list_members">'+sorted[i].members+'</div>'+
 			                                       sorted[i].channel+'</div>');
-			  	if ($('channel_list_'+sorted[i].channel) != undefined) {
-					Event.observe('channel_list_'+sorted[i].channel, "click", this.join);
+			  	if ($('#channel_list_'+sorted[i].channel) != undefined) {
+					$('#channel_list_'+sorted[i].channel).click(function(){that.join});
 			  	}
 			}
 		}
 		if (!cnt) {
-			new Insertion.Bottom(this.divList, ' No channels found');
+			$("#" + this.divList).append(' No channels found');
 		}
 	}
 });

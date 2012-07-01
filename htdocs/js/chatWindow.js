@@ -120,7 +120,8 @@ chatWindow.prototype = {
 	},
 
 	visible: function() {
-		return this.element.visible();
+		//return $(this.element).show();
+		$("#" + this.id).show();
 	},
 
 	center: function() {
