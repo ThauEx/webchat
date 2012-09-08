@@ -1,4 +1,4 @@
-<?
+<?php
 abstract class socketClient extends socket {
 	public $remote_address = null;
 	public $remote_port    = null;

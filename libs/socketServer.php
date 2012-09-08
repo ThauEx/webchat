@@ -1,4 +1,4 @@
-<?
+<?php
 abstract class socketServer extends socket {
 	protected $client_class;
 

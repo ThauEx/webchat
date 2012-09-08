@@ -1,4 +1,4 @@
-<?
+<?php
 class socketDaemon {
 	public $servers = array();
 	public $clients = array();

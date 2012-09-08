@@ -1,4 +1,4 @@
-<?
+<?php
 require_once('socketClient.php');
 require_once('socketServer.php');
 require_once('socketServerClient.php');

@@ -1,5 +1,5 @@
 #!/usr/bin/php -Cq
-<?
+<?php
 /*
 WebChat2.0 Copyright (C) 2006-2007, Chris Chabot <chabotc@xs4all.nl>
 
